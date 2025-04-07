@@ -1,0 +1,20 @@
+query SearchEmotes(
+  $query: String!
+  $page: Int
+  $sort: Sort
+  $limit: Int
+  $filter: EmoteSearchFilter
+) {
+  emotes(
+    query: $query
+    page: $page
+    sort: $sort
+    limit: $limit
+    filter: $filter
+  ) {
+    count
+    items {
+      name
+    }
+  }
+}
