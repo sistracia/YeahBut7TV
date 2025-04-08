@@ -1,6 +1,10 @@
 import Foundation
 import Apollo
 
+enum SevenTVClientError: Error {
+    case networkError(String)
+}
+
 class SevenTVClient {
     private let apolloClient: ApolloClient
     
@@ -8,13 +12,15 @@ class SevenTVClient {
         self.apolloClient = ApolloClient(url: url)
     }
     
-    func searchEmotes() {
-        self.apolloClient.fetch(query: SevenTVAPI.SearchEmotesQuery(query: "", page: 1, sort: .none, limit: 10, filter: .none)) { result in
-            switch result {
-            case .success(let graphQLResult):
-                print("Success! Result: \(graphQLResult)")
-            case .failure(let error):
-                print("Failure! Error: \(error)")
+    func searchEmotes(query: SevenTVAPI.SearchEmotesQuery) async throws -> GraphQLResult<SevenTVAPI.SearchEmotesQuery.Data> {
+        return try await withCheckedThrowingContinuation{ continuation in
+            self.apolloClient.fetch(query: query) { result in
+                switch result {
+                case .success(let graphQLResult):
+                    continuation.resume(returning: graphQLResult)
+                case .failure(let error):
+                    continuation.resume(throwing: SevenTVClientError.networkError(error.localizedDescription))
+                }
             }
         }
     }
