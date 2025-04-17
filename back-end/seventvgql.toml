@@ -1,0 +1,6 @@
+[tool.ariadne-codegen]
+remote_schema_url = "https://7tv.io/v3/gql"
+schema_path = "./graphql/schema.graphql"
+queries_path = "./graphql/queries.graphql"
+target_package_name = "seventv_client"
+target_package_path = "./src/back_end"
