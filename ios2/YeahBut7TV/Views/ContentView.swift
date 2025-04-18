@@ -1,58 +1,49 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var modelData: ModelData
-    @State var emoteName: String = ""
-    @State var searchCaseSensitive: Bool = false
-    @State var searchExactMatch: Bool = false
+    @EnvironmentObject private var modelData: ModelData
     
-    private var gridColumns = Array(repeating: GridItem(.flexible()), count: 4)
+    @State private var sharedFilePreviewName: String = ""
+    @State private var sharedFilePreviewURL: URL? = nil
+    @State private var sharedFileURL: URL? = nil
+    @State private var loadingSharedFile: Bool = false
+    
+    private let columns = Array(repeating: GridItem(.flexible()), count: 2)
+    
+    var isEmoteLoading: Bool {
+        switch modelData.serverState {
+        case .loading:
+            return true
+        default:
+            return false
+        }
+    }
     
     var body: some View {
+        let isAnySharedFileURL = Binding(
+            get: {
+                return sharedFileURL != nil
+            },
+            set: { value in
+                sharedFileURL = value ? sharedFileURL : nil
+            }
+        )
+        
         Form {
             Section {
-                TextField(
-                    "Emote name",
-                    text: $emoteName
-                )
-                .textInputAutocapitalization(.never)
-                .disableAutocorrection(true)
-                
-                Toggle("Case Sensitive", isOn: $searchCaseSensitive)
-                Toggle("Exact Match", isOn: $searchExactMatch)
-                
-                Button {
-                    Task {
-                        await modelData.searchEmotes(
-                            query: SevenTVAPISearchEmotesQuery(query: emoteName,
-                                                               caseSensitive: searchCaseSensitive,
-                                                               exactMatch: searchExactMatch)
-                        )
-                    }
-                } label: {
-                    Text("Search")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
+                SearchSection()
             } header: {
                 Text("Search")
             }
             
             Section {
                 ScrollView {
-                    LazyVGrid(columns: gridColumns) {
+                    LazyVGrid(columns: columns) {
                         ForEach(modelData.emote.emotes.items, id: \.id) { emoteItem in
-                            VStack {
-                                if let lastEmote = emoteItem.host.files.last {
-                                    GeometryReader { geo in
-                                        ImageItem(size:geo.size.width,
-                                                  url: URL(string: "https:\(emoteItem.host.url)/\(lastEmote.name)")!,
-                                                  isAnimated: lastEmote.format != "PNG")
-                                    }
-                                    .cornerRadius(8.0)
-                                    .aspectRatio(1, contentMode: .fit)
-                                }
-                                Text(emoteItem.name)
+                            GridItemView(emoteItem: emoteItem) { fileName, url in
+                                sharedFilePreviewName = fileName
+                                sharedFilePreviewURL = url
+                                downloadGIF(fileName, from: url)
                             }
                         }
                     }
@@ -61,16 +52,72 @@ struct ContentView: View {
                 Text("\(modelData.emote.emotes.count) Emotes")
             }
         }
+        .overlay {
+            if isEmoteLoading || loadingSharedFile {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                    .overlay(ProgressView())
+            }
+        }
+        .sheet(isPresented: isAnySharedFileURL) {
+            if let sharedFileURL = sharedFileURL,
+               let sharedFilePreviewURL = sharedFilePreviewURL {
+                VStack(alignment: .center) {
+                    GeometryReader { geo in
+                        VStack {
+                            ImageItem(size: geo.size.width * 0.8,
+                                      url: sharedFilePreviewURL,
+                                      isAnimated: sharedFilePreviewURL.absoluteString.hasSuffix(".gif"))
+                            Text(sharedFilePreviewName)
+                        }
+                        .position(x: geo.size.width / 2, y: geo.size.height / 2)
+                    }
+                    
+                    ShareLink(item: sharedFileURL) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .padding()
+            }
+        }
         .task() {
             await modelData.searchEmotes(
                 query: SevenTVAPISearchEmotesQuery(query: "")
             )
         }
     }
+    
+    // Thanks to Grok
+    func downloadGIF(_ fileName: String, from url: URL) {
+        loadingSharedFile = true
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                print("Error downloading GIF: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            
+            let tempDirectory = FileManager.default.temporaryDirectory
+            let fileURL = tempDirectory.appendingPathComponent(fileName)
+            
+            do {
+                try data.write(to: fileURL)
+                DispatchQueue.main.async {
+                    self.sharedFileURL = fileURL
+                }
+            } catch {
+                print("Error saving GIF: \(error.localizedDescription)")
+            }
+            
+            loadingSharedFile = false
+        }.resume()
+    }
 }
 
 #Preview {
-    var modelData = ModelData()
+    let modelData = ModelData()
     modelData.emote = Emote(emotes: Emotes(count: 10,
                                            items: [
                                             .init(id: "01F6MZGCNG000255K4X1K7NTHR",
