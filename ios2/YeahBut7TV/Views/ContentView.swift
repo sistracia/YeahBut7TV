@@ -2,50 +2,63 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var modelData: ModelData
-    @State var emote: String = ""
+    @State var emoteName: String = ""
+    @State var searchCaseSensitive: Bool = false
+    @State var searchExactMatch: Bool = false
     
-    private var gridColumns = Array(repeating: GridItem(.flexible()), count: 2)
-
+    private var gridColumns = Array(repeating: GridItem(.flexible()), count: 4)
+    
     var body: some View {
         Form {
             Section {
-                HStack {
-                    TextField(
-                        "Emotes",
-                        text: $emote
-                    )
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    Button {
-                        Task {
-                            await modelData.searchEmotes(
-                                query: SevenTVAPISearchEmotesQuery(query: emote)
-                            )
-                        }
-                    } label: {
-                        Text("Search")
+                TextField(
+                    "Emote name",
+                    text: $emoteName
+                )
+                .textInputAutocapitalization(.never)
+                .disableAutocorrection(true)
+                
+                Toggle("Case Sensitive", isOn: $searchCaseSensitive)
+                Toggle("Exact Match", isOn: $searchExactMatch)
+                
+                Button {
+                    Task {
+                        await modelData.searchEmotes(
+                            query: SevenTVAPISearchEmotesQuery(query: emoteName,
+                                                               caseSensitive: searchCaseSensitive,
+                                                               exactMatch: searchExactMatch)
+                        )
                     }
-                    .buttonStyle(.borderedProminent)
+                } label: {
+                    Text("Search")
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
             } header: {
                 Text("Search")
             }
             
-            LazyVGrid(columns: gridColumns) {
-                ForEach(modelData.emote.emotes.items, id: \.id) { emoteItem in
-                    VStack {
-                        if let lastEmote = emoteItem.host.files.last {
-                            GeometryReader { geo in
-                                ImageItem(size:geo.size.width,
-                                          url: URL(string: "\(emoteItem.host.url)/\(lastEmote.name)")!,
-                                          isAnimated: lastEmote.format != "PNG")
+            Section {
+                ScrollView {
+                    LazyVGrid(columns: gridColumns) {
+                        ForEach(modelData.emote.emotes.items, id: \.id) { emoteItem in
+                            VStack {
+                                if let lastEmote = emoteItem.host.files.last {
+                                    GeometryReader { geo in
+                                        ImageItem(size:geo.size.width,
+                                                  url: URL(string: "https:\(emoteItem.host.url)/\(lastEmote.name)")!,
+                                                  isAnimated: lastEmote.format != "PNG")
+                                    }
+                                    .cornerRadius(8.0)
+                                    .aspectRatio(1, contentMode: .fit)
+                                }
+                                Text(emoteItem.name)
                             }
-                            .cornerRadius(8.0)
-                            .aspectRatio(1, contentMode: .fit)
                         }
-                        Text(emoteItem.name)
                     }
                 }
+            } header: {
+                Text("\(modelData.emote.emotes.count) Emotes")
             }
         }
         .task() {
