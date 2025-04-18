@@ -192,7 +192,6 @@ class SevenTVClient {
         
         var request = URLRequest(url: urlWithQueryItems)
         request.httpMethod = "GET"
-        request.setValue("accept", forHTTPHeaderField: "application/json")
         
         guard let (data, response) = try await self.session.data(for: request) as? (Data, HTTPURLResponse),
               validStatuses.contains(response.statusCode)
