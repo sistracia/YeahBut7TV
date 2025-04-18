@@ -6,12 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		EEEA5CFF2DA42800001B804D /* ApolloAPI in Frameworks */ = {isa = PBXBuildFile; productRef = EEEA5CFE2DA42800001B804D /* ApolloAPI */; };
-		EEEA5D012DA42838001B804D /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = EEEA5D002DA42838001B804D /* Apollo */; };
-		EEEA5D052DA4288E001B804D /* ApolloSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = EEEA5D042DA4288E001B804D /* ApolloSQLite */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		EEEA5A402DA3D07E001B804D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -41,16 +35,6 @@
 			path = YeahBut7TV;
 			sourceTree = "<group>";
 		};
-		EEEA5A422DA3D07E001B804D /* YeahBut7TVTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = YeahBut7TVTests;
-			sourceTree = "<group>";
-		};
-		EEEA5A4C2DA3D07E001B804D /* YeahBut7TVUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = YeahBut7TVUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,9 +42,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EEEA5CFF2DA42800001B804D /* ApolloAPI in Frameworks */,
-				EEEA5D052DA4288E001B804D /* ApolloSQLite in Frameworks */,
-				EEEA5D012DA42838001B804D /* Apollo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,8 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				EEEA5A342DA3D07C001B804D /* YeahBut7TV */,
-				EEEA5A422DA3D07E001B804D /* YeahBut7TVTests */,
-				EEEA5A4C2DA3D07E001B804D /* YeahBut7TVUITests */,
 				EEEA5A332DA3D07C001B804D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -121,9 +100,6 @@
 			);
 			name = YeahBut7TV;
 			packageProductDependencies = (
-				EEEA5CFE2DA42800001B804D /* ApolloAPI */,
-				EEEA5D002DA42838001B804D /* Apollo */,
-				EEEA5D042DA4288E001B804D /* ApolloSQLite */,
 			);
 			productName = YeahBut7TV;
 			productReference = EEEA5A322DA3D07C001B804D /* YeahBut7TV.app */;
@@ -141,9 +117,6 @@
 			);
 			dependencies = (
 				EEEA5A412DA3D07E001B804D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				EEEA5A422DA3D07E001B804D /* YeahBut7TVTests */,
 			);
 			name = YeahBut7TVTests;
 			packageProductDependencies = (
@@ -164,9 +137,6 @@
 			);
 			dependencies = (
 				EEEA5A4B2DA3D07E001B804D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				EEEA5A4C2DA3D07E001B804D /* YeahBut7TVUITests */,
 			);
 			name = YeahBut7TVUITests;
 			packageProductDependencies = (
@@ -208,7 +178,6 @@
 			mainGroup = EEEA5A292DA3D07C001B804D;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				EEEA5AA12DA404A3001B804D /* XCRemoteSwiftPackageReference "apollo-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EEEA5A332DA3D07C001B804D /* Products */;
@@ -583,35 +552,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		EEEA5AA12DA404A3001B804D /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.19.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		EEEA5CFE2DA42800001B804D /* ApolloAPI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EEEA5AA12DA404A3001B804D /* XCRemoteSwiftPackageReference "apollo-ios" */;
-			productName = ApolloAPI;
-		};
-		EEEA5D002DA42838001B804D /* Apollo */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EEEA5AA12DA404A3001B804D /* XCRemoteSwiftPackageReference "apollo-ios" */;
-			productName = Apollo;
-		};
-		EEEA5D042DA4288E001B804D /* ApolloSQLite */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EEEA5AA12DA404A3001B804D /* XCRemoteSwiftPackageReference "apollo-ios" */;
-			productName = ApolloSQLite;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EEEA5A2A2DA3D07C001B804D /* Project object */;
 }

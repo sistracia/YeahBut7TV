@@ -10,22 +10,22 @@ class ModelData: ObservableObject {
         case error(String);
     }
     
-    @Published var emotes = [SevenTVAPI.SearchEmotesQuery.Data.Emotes.Item]()
+    @Published var emote = Emote(emotes: Emotes(count: 0, items: []))
     @Published var serverState: ServerState = .idle
     
-    init(sevenTVClient: SevenTVClient = SevenTVClient(url: URL(string: "https://7tv.io/v3/gql")!)) {
+    init(sevenTVClient: SevenTVClient = SevenTVClient(url: URL(string: "https://7tv-emotes.sistracia.com")!)) {
         self.sevenTVClient = sevenTVClient
     }
     
     @MainActor
-    func searchEmotes(query: SevenTVAPI.SearchEmotesQuery) async {
+    func searchEmotes(query: SevenTVAPISearchEmotesQuery) async {
         self.serverState = .loading
         do {
-            let searchEmotes = try await self.sevenTVClient.searchEmotes(query: query)
-            self.emotes = searchEmotes.data?.emotes.items ?? []
+            let searchEmote = try await self.sevenTVClient.searchEmotes(query: query)
+            self.emote = searchEmote
             self.serverState = .idle
-        } catch(let err) {
-            self.serverState = .error(err.localizedDescription)
+        } catch(let error) {
+            self.serverState = .error(error.localizedDescription)
         }
     }
 }

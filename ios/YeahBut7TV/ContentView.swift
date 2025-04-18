@@ -14,14 +14,12 @@ struct ContentView: View {
             .disableAutocorrection(true)
             .textFieldStyle(.roundedBorder)
             Spacer()
+            Text("Total emotes: \(modelData.emote.emotes.count)")
         }
         .padding()
-        .onChange(of: modelData.emotes) { emotes in
-            debugPrint(emotes)
-        }
         .task(id: textObserver.debouncedText) {
             await modelData.searchEmotes(
-                query: SevenTVAPI.SearchEmotesQuery(query: textObserver.debouncedText, page: 1, sort: .none, limit: 10, filter: .none)
+                query: SevenTVAPISearchEmotesQuery(query: textObserver.debouncedText)
             )
         }
     }
