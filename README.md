@@ -18,4 +18,4 @@ https://7tv.io/v3/gql ([Playground](https://7tv.io/v3/gql/playground))
 
 ## Demo
 
-https://github.com/user-attachments/assets/0be0efe2-cd16-4151-a391-5e25faeda2b3
+https://github.com/user-attachments/assets/2919b4e1-367b-40af-9dc7-3a63f86ae4f0
