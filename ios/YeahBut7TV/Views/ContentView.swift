@@ -37,7 +37,7 @@ struct ContentView: View {
             }
             
             Section {
-                ScrollView {
+                List {
                     LazyVGrid(columns: columns) {
                         ForEach(modelData.emote.emotes.items, id: \.id) { emoteItem in
                             GridItemView(emoteItem: emoteItem) { fileName, url in
@@ -46,6 +46,9 @@ struct ContentView: View {
                                 downloadGIF(fileName, from: url)
                             }
                         }
+                    }
+                    if !modelData.isAllEmotesLoaded {
+                        InfinityScroll()
                     }
                 }
             } header: {
@@ -81,11 +84,6 @@ struct ContentView: View {
                 }
                 .padding()
             }
-        }
-        .task() {
-            await modelData.searchEmotes(
-                query: SevenTVAPISearchEmotesQuery(query: "")
-            )
         }
     }
     
