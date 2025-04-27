@@ -25,14 +25,21 @@ class ModelData: ObservableObject {
         self.serverState = .loading
         do {
             let searchEmote = try await self.sevenTVClient.searchEmotes(query: query)
-            let emoteCount = searchEmote.emotes.count
-            var emoteItems = self.emote.emotes.items
-            emoteItems.append(contentsOf: searchEmote.emotes.items)
             
+            let emoteCount = searchEmote.emotes.count
+            var emoteItems = searchEmote.emotes.items
+            var isAllEmotesLoaded = false
+            
+            if query.page > self.lastQuery.page {
+                emoteItems = self.emote.emotes.items
+                emoteItems.append(contentsOf: searchEmote.emotes.items)
+                isAllEmotesLoaded = emoteItems.count >= emoteCount
+            }
+
             self.lastQuery = query
             self.emote = Emote(emotes: Emotes(count: emoteCount, items: emoteItems))
             self.serverState = .idle
-            self.isAllEmotesLoaded = emoteItems.count >= emoteCount
+            self.isAllEmotesLoaded = isAllEmotesLoaded
         } catch(let error) {
             self.serverState = .error(error.localizedDescription)
         }

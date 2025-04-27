@@ -23,6 +23,7 @@ struct SearchSection: View {
                 Task {
                     await modelData.searchEmotes(
                         query: SevenTVAPISearchEmotesQuery(query: emoteName,
+                                                           page: 1,
                                                            caseSensitive: searchCaseSensitive,
                                                            exactMatch: searchExactMatch)
                     )
