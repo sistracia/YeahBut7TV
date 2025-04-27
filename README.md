@@ -1,6 +1,6 @@
 <div align="center">
   <picture>
-     <img width="100" alt="logo" src="./ios/YeahBut7TV/Assets.xcassets/AppIcon.appiconset/donk.png">
+     <img width="100" alt="logo" src="./ios/YeahBut7TV/Assets.xcassets/AppIcon.appiconset/donk 1.png">
   </picture>
 </div>
 
