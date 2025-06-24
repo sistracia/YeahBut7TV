@@ -20,7 +20,6 @@ class ModelData: ObservableObject {
         self.sevenTVClient = sevenTVClient
     }
     
-    @MainActor
     func searchEmotes(query: SevenTVAPISearchEmotesQuery) async {
         self.serverState = .loading
         do {
