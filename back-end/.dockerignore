@@ -175,3 +175,6 @@ cython_debug/
 
 # Git
 .git
+
+# other
+.DS_Store
